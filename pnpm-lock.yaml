@@ -157,6 +157,9 @@ importers:
         specifier: ^1.6.0
         version: 1.13.2
     devDependencies:
+      '@types/wechat-miniprogram':
+        specifier: ^3.4.0
+        version: 3.4.8
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
@@ -2430,6 +2433,10 @@ packages:
   /@types/urijs@1.19.26:
     resolution: {integrity: sha512-wkXrVzX5yoqLnndOwFsieJA7oKM8cNkOKJtf/3vVGSUFkWDKZvFHpIl9Pvqb/T9UsawBBFMTTD8xu7sK5MWuvg==}
     dev: false
+
+  /@types/wechat-miniprogram@3.4.8:
+    resolution: {integrity: sha512-lOqddA707X3SZxVhlZNBZPzYzj7lG/ED2fF30k+aE2oT6R4wfw0Wiup2k2hGrmzYUFyJXfGs01sDCuJMhQMAdg==}
+    dev: true
 
   /@types/yargs-parser@21.0.3:
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
