@@ -1,0 +1,58 @@
+{
+  "name": "@orval-forge/core",
+  "version": "1.0.0",
+  "description": "OrvalForge core code generation engine",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "OrvalForge Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/orval-forge.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/your-org/orval-forge#readme",
+  "bugs": {
+    "url": "https://github.com/your-org/orval-forge/issues"
+  },
+  "keywords": [
+    "orval",
+    "openapi",
+    "swagger",
+    "code-generation",
+    "typescript",
+    "api-client",
+    "http-client"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@orval-forge/types": "workspace:*",
+    "orval": "^6.31.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

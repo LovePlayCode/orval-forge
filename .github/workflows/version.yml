@@ -1,0 +1,102 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0, 1.1.0, 2.0.0)'
+        required: true
+        type: string
+      version-type:
+        description: 'Version type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Update version
+        run: |
+          # 更新根 package.json 版本
+          npm version ${{ inputs.version }} --no-git-tag-version
+          
+          # 更新所有包的版本
+          pnpm -r --filter './packages/*' exec npm version ${{ inputs.version }} --no-git-tag-version
+      
+      - name: Generate CHANGELOG
+        run: |
+          # 这里可以添加生成 CHANGELOG 的逻辑
+          echo "## v${{ inputs.version }}" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "Released on $(date +'%Y-%m-%d')" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+      
+      - name: Create Release Branch
+        run: |
+          BRANCH_NAME="release/v${{ inputs.version }}"
+          git checkout -b $BRANCH_NAME
+          git add .
+          git commit -m "chore: release v${{ inputs.version }}"
+          git push origin $BRANCH_NAME
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/v${{ inputs.version }}
+          title: "chore: release v${{ inputs.version }}"
+          body: |
+            ## Release v${{ inputs.version }}
+            
+            This PR bumps the version to **v${{ inputs.version }}** (${{ inputs.version-type }} release).
+            
+            ### Changes
+            - Updated all package versions
+            - Generated CHANGELOG
+            
+            ### Next Steps
+            1. Review the changes
+            2. Merge this PR to trigger automatic publishing to npm
+            3. A GitHub release will be created automatically
+            
+            ---
+            
+            **Version Type**: ${{ inputs.version-type }}
+            **Target Version**: ${{ inputs.version }}
+          labels: |
+            release
+            ${{ inputs.version-type }}

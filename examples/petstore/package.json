@@ -1,0 +1,23 @@
+{
+  "name": "orval-forge-petstore-example",
+  "version": "1.0.0",
+  "description": "OrvalForge Petstore API 生成示例",
+  "private": true,
+  "scripts": {
+    "generate": "orval-forge generate",
+    "generate:watch": "orval-forge generate --watch", 
+    "generate:check": "orval-forge generate --dry-run --verbose",
+    "validate": "orval-forge config",
+    "clean": "rm -rf generated/",
+    "test": "pnpm generate && pnpm test:generated",
+    "test:generated": "node verify-generation.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@orval-forge/cli": "workspace:*",
+    "orval-forge": "workspace:*",
+    "typescript": "^5.0.0"
+  }
+}

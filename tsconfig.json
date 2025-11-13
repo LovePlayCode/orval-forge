@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [],
+  "references": [
+    {
+      "path": "./packages/types"
+    },
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/my-request"
+    },
+    {
+      "path": "./packages/my-mini-request"
+    },
+    {
+      "path": "./packages/cli"
+    },
+    {
+      "path": "./packages/orval-forge"
+    }
+  ]
+}

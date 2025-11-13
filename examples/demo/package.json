@@ -1,0 +1,60 @@
+{
+  "name": "orval-forge-demo",
+  "version": "1.0.0",
+  "description": "OrvalForge 使用演示项目",
+  "main": "src/index.ts",
+  "scripts": {
+    "setup": "cd ../../ && pnpm build && cd examples/demo && pnpm install",
+    "generate": "orval-forge generate",
+    "generate:watch": "orval-forge generate --watch",
+    "generate:check": "orval-forge generate --dry-run --verbose",
+    "init": "orval-forge init --client MyRequest",
+    "info": "orval-forge info",
+    "config": "orval-forge config",
+    
+    "start": "pnpm generate && ts-node src/simple-demo.ts",
+    "dev": "pnpm generate:watch & pnpm dev:server",
+    "dev:server": "nodemon --exec ts-node src/index.ts",
+    
+    "simple": "pnpm generate && ts-node src/simple-demo.ts",
+    "example:basic": "pnpm generate && ts-node src/examples/basic-usage.ts",
+    "example:advanced": "pnpm generate && ts-node src/examples/advanced-usage.ts",
+    "example:error-handling": "pnpm generate && ts-node src/examples/error-handling.ts",
+    "example:all": "pnpm example:basic && pnpm example:advanced && pnpm example:error-handling",
+    
+    "build": "pnpm generate && tsc",
+    "clean": "rm -rf generated/ dist/",
+    "test": "pnpm generate && jest"
+  },
+  "keywords": [
+    "orval-forge",
+    "demo",
+    "openapi",
+    "swagger",
+    "typescript",
+    "api-client"
+  ],
+  "author": "OrvalForge Demo",
+  "license": "MIT",
+  "dependencies": {
+    "orval-forge": "workspace:*",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@orval-forge/cli": "workspace:*",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "nodemon": "^3.0.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "ts-jest": "^29.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/src/**/*.test.ts"
+    ]
+  }
+}

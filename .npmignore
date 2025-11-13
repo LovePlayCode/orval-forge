@@ -1,0 +1,68 @@
+# Source files
+src/
+tests/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# Development files
+.vscode/
+.idea/
+.DS_Store
+*.log
+*.swp
+*.swo
+
+# Build configuration
+tsconfig.json
+tsconfig.*.json
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (optional, keep if needed)
+docs/
+examples/
+*.md
+!README.md
+
+# Testing
+coverage/
+.nyc_output/
+jest.config.js
+vitest.config.ts
+
+# Build artifacts
+*.tsbuildinfo
+node_modules/
+
+# Monorepo files
+pnpm-workspace.yaml
+turbo.json
+lerna.json
+.changeset/
+
+# Scripts
+scripts/
+tools/
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.*

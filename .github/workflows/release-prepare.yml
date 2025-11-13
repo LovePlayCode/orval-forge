@@ -1,0 +1,99 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.2.3)'
+        required: true
+      type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Update workspace versions
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          echo "Updating all packages to version $VERSION"
+          
+          # 更新根 package.json
+          npm version $VERSION --no-git-tag-version
+          
+          # 更新所有工作区包
+          pnpm -r --filter './packages/*' exec npm version $VERSION --no-git-tag-version
+          
+          # 更新 pnpm-lock.yaml
+          pnpm install --lockfile-only
+
+      - name: Build packages
+        run: pnpm run build
+
+      - name: Run tests
+        run: pnpm run test:run
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(release): bump version to v${{ github.event.inputs.version }}'
+          branch: release/v${{ github.event.inputs.version }}
+          title: 'Release v${{ github.event.inputs.version }}'
+          body: |
+            ## Release v${{ github.event.inputs.version }}
+            
+            **Type**: ${{ github.event.inputs.type }}
+            
+            This PR prepares the release of version v${{ github.event.inputs.version }}.
+            
+            ### Changes
+            - All package versions updated to v${{ github.event.inputs.version }}
+            - Build completed successfully
+            - All tests passing
+            
+            ### Checklist
+            - [x] Version numbers updated
+            - [x] Build successful
+            - [x] Tests passing
+            - [ ] CHANGELOG reviewed
+            - [ ] Breaking changes documented (if any)
+            
+            ### Next Steps
+            Once this PR is reviewed and merged, packages will be automatically published to npm.

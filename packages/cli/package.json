@@ -1,0 +1,61 @@
+{
+  "name": "@orval-forge/cli",
+  "version": "1.0.0",
+  "description": "OrvalForge command line interface",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "OrvalForge Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/orval-forge.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/your-org/orval-forge#readme",
+  "bugs": {
+    "url": "https://github.com/your-org/orval-forge/issues"
+  },
+  "keywords": [
+    "orval",
+    "cli",
+    "code-generation",
+    "openapi",
+    "swagger",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bin": {
+    "orval-forge": "./dist/lib/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@orval-forge/core": "workspace:*",
+    "@orval-forge/types": "workspace:*",
+    "commander": "^11.0.0",
+    "chokidar": "^3.5.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "@orval-forge/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for OrvalForge",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "OrvalForge Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/orval-forge.git",
+    "directory": "packages/types"
+  },
+  "homepage": "https://github.com/your-org/orval-forge#readme",
+  "bugs": {
+    "url": "https://github.com/your-org/orval-forge/issues"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "orval",
+    "definitions"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

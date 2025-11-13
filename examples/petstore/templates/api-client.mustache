@@ -1,0 +1,43 @@
+
+import { MyRequest } from '@orval-forge/my-request';
+import type { ApiResponse } from '@orval-forge/types';
+
+// 创建 HTTP 客户端实例
+const httpClient = new MyRequest({
+  baseURL: '{{baseURL}}',
+  timeout: {{timeout}},
+  headers: {
+    {{#headers}}
+    '{{@key}}': '{{.}}',
+    {{/headers}}
+  },
+});
+
+{{#operations}}
+{{#operation}}
+/**
+ * {{summary}}
+ * {{description}}
+ */
+export async function {{operationId}}(
+  {{#allParams}}
+  {{paramName}}: {{dataType}}{{#hasMore}},{{/hasMore}}
+  {{/allParams}}
+): Promise<ApiResponse<{{returnType}}>> {
+  return httpClient.{{httpMethod.toLowerCase()}}(
+    '{{path}}'{{#hasBodyParams}},
+    {
+      {{#bodyParams}}
+      {{paramName}},
+      {{/bodyParams}}
+    }{{/hasBodyParams}}{{#hasQueryParams}},
+    {
+      {{#queryParams}}
+      {{paramName}},
+      {{/queryParams}}
+    }{{/hasQueryParams}}
+  );
+}
+
+{{/operation}}
+{{/operations}}

@@ -1,0 +1,59 @@
+{
+  "name": "orval-forge",
+  "version": "1.0.0",
+  "description": "A powerful wrapper around Orval with custom HTTP client integration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": "OrvalForge Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/orval-forge.git",
+    "directory": "packages/orval-forge"
+  },
+  "homepage": "https://github.com/your-org/orval-forge#readme",
+  "bugs": {
+    "url": "https://github.com/your-org/orval-forge/issues"
+  },
+  "keywords": [
+    "orval",
+    "openapi",
+    "swagger",
+    "code-generation",
+    "typescript",
+    "http-client",
+    "api-client"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "@orval-forge/core": "workspace:*",
+    "@orval-forge/my-request": "workspace:*",
+    "@orval-forge/my-mini-request": "workspace:*",
+    "@orval-forge/types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

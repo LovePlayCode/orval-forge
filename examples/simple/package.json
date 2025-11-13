@@ -1,0 +1,14 @@
+{
+  "name": "orval-forge-simple-example",
+  "version": "1.0.0",
+  "description": "简单的 OrvalForge 示例",
+  "private": true,
+  "scripts": {
+    "generate": "orval-forge generate",
+    "test": "node test.js"
+  },
+  "devDependencies": {
+    "@orval-forge/cli": "workspace:*",
+    "orval-forge": "workspace:*"
+  }
+}
