@@ -1,12 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalEnv": [
-    "NODE_ENV",
-    "CI",
-    "DEBUG",
-    "NPM_TOKEN"
-  ],
-  "daemon": false,
+  "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": [
@@ -54,5 +48,11 @@
     "clean": {
       "cache": false
     }
-  }
+  },
+  "globalEnv": [
+    "NODE_ENV",
+    "CI",
+    "DEBUG",
+    "NPM_TOKEN"
+  ]
 }
