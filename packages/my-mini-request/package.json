@@ -43,8 +43,7 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "@types/wechat-miniprogram": "^3.4.0"
+    "vitest": "^1.0.0"
   },
   "files": [
     "dist",
