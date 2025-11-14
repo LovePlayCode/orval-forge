@@ -61,10 +61,13 @@ jobs:
           
           # 更新 pnpm-lock.yaml
           pnpm install --lockfile-only
+          
+          # 显示变更
+          echo "Changed files:"
+          git status --short
       
       - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore(release): bump version to v${{ inputs.version }}'
@@ -74,30 +77,3 @@ jobs:
           body: |
             This PR prepares the release of version v${{ inputs.version }}.
             Once merged, the publish workflow will trigger automatically.
-            
-            ## ⚠️ If you find issues before merging:
-            
-            **Option 1: Fix in main first (for critical bugs)**
-            1. Close this PR (don't merge)
-            2. Create a fix PR and merge to main
-            3. Delete the `release/v${{ inputs.version }}` branch
-            4. Re-run this workflow to create a fresh release PR
-            
-            **Option 2: Minor fixes in release branch**
-            1. Checkout this branch: `git checkout release/v${{ inputs.version }}`
-            2. Make your changes and commit
-            3. Push changes: `git push origin release/v${{ inputs.version }}`
-            4. This PR will auto-update
-            
-            **Option 3: Cancel this release**
-            1. Close this PR without merging
-            2. Delete the `release/v${{ inputs.version }}` branch
-      
-      - name: Check PR result
-        run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
-          echo "Pull Request Operation - ${{ steps.cpr.outputs.pull-request-operation }}"
-          if [ -z "${{ steps.cpr.outputs.pull-request-number }}" ]; then
-            echo "No pull request was created (possibly no changes detected)"
-          fi

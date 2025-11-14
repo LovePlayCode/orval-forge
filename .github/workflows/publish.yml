@@ -86,7 +86,7 @@ jobs:
             # Core packages
             pnpm add @orval-forge/core@${{ steps.version.outputs.version }}
             pnpm add @orval-forge/cli@${{ steps.version.outputs.version }}
-
+            Hello World
             # Request adapters
             pnpm add @orval-forge/my-request@${{ steps.version.outputs.version }}
             pnpm add @orval-forge/my-mini-request@${{ steps.version.outputs.version }}
