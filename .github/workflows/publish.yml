@@ -42,7 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       
       - name: Run build
-        run: pnpm run build
+        run: pnpm run build --filter='./packages/*'
       
       - name: Run tests (pre-publish verification)
         run: pnpm run test:run --filter='./packages/*'

@@ -64,7 +64,7 @@ jobs:
           pnpm install --lockfile-only
 
       - name: Build packages
-        run: pnpm run build
+        run: pnpm run build --filter='./packages/*'
 
       - name: Run tests
         run: pnpm run test:run --filter='./packages/*'
