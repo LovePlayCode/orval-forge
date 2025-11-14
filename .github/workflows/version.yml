@@ -63,12 +63,20 @@ jobs:
           pnpm install --lockfile-only
       
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore(release): bump version to v${{ inputs.version }}'
           branch: release/v${{ inputs.version }}
+          delete-branch: true
           title: 'Release v${{ inputs.version }}'
           body: |
             This PR prepares the release of version v${{ inputs.version }}.
             Once merged, the publish workflow will trigger automatically.
+      
+      - name: Check outputs
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
