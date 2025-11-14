@@ -12,24 +12,24 @@ jobs:
   publish:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8.15.0
-      
+
       - name: Cache pnpm dependencies
         uses: actions/cache@v4
         with:
@@ -37,37 +37,37 @@ jobs:
           key: pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             pnpm-
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Run build
         run: pnpm run build --filter='./packages/*'
-      
+
       - name: Run tests (pre-publish verification)
         run: pnpm run test:run --filter='./packages/*'
-      
+
       - name: Configure npm authentication
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      
+
       - name: Publish packages to npm
         run: |
-          pnpm -r --filter './packages/*' --no-private publish --access public --no-git-checks
-      
+          pnpm -r --filter './packages/*' publish --access public --no-git-checks
+
       - name: Extract version
         id: version
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      
+
       - name: Create GitHub Tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag v${{ steps.version.outputs.version }}
           git push origin v${{ steps.version.outputs.version }}
-      
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -78,22 +78,22 @@ jobs:
           generate_release_notes: true
           body: |
             ## 📦 Published Packages
-            
+
             All packages in this monorepo have been published to npm with version v${{ steps.version.outputs.version }}.
-            
+
             ### Installation
             ```bash
             # Core packages
             pnpm add @orval-forge/core@${{ steps.version.outputs.version }}
             pnpm add @orval-forge/cli@${{ steps.version.outputs.version }}
-            
+
             # Request adapters
             pnpm add @orval-forge/my-request@${{ steps.version.outputs.version }}
             pnpm add @orval-forge/my-mini-request@${{ steps.version.outputs.version }}
-            
+
             # All-in-one package
             pnpm add orval-forge@${{ steps.version.outputs.version }}
             ```
-            
+
             ### What's Changed
             See the full changelog below (auto-generated from commits).
