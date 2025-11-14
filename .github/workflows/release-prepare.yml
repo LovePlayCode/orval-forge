@@ -49,17 +49,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Update workspace versions
+      - name: Update versions
         run: |
-          VERSION="${{ github.event.inputs.version }}"
-          echo "Updating all packages to version $VERSION"
-          
+          echo "Updating all workspace versions to ${{ github.event.inputs.version }}"
+
           # 更新根 package.json
-          npm version $VERSION --no-git-tag-version
-          
-          # 更新所有工作区包
-          pnpm -r --filter './packages/*' exec npm version $VERSION --no-git-tag-version
-          
+          jq --arg version "${{ github.event.inputs.version }}" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+          # 更新所有 workspace 包的版本
+          find packages -name "package.json" -type f | while read -r pkg; do
+            echo "Updating $pkg to version ${{ github.event.inputs.version }}"
+            jq --arg version "${{ github.event.inputs.version }}" '.version = $version' "$pkg" > "$pkg.tmp"
+            mv "$pkg.tmp" "$pkg"
+          done
+
           # 更新 pnpm-lock.yaml
           pnpm install --lockfile-only
 
@@ -75,25 +79,26 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore(release): bump version to v${{ github.event.inputs.version }}'
           branch: release/v${{ github.event.inputs.version }}
+          base: main
           title: 'Release v${{ github.event.inputs.version }}'
           body: |
             ## Release v${{ github.event.inputs.version }}
-            
+
             **Type**: ${{ github.event.inputs.type }}
-            
+
             This PR prepares the release of version v${{ github.event.inputs.version }}.
-            
+
             ### Changes
             - All package versions updated to v${{ github.event.inputs.version }}
             - Build completed successfully
             - All tests passing
-            
+
             ### Checklist
             - [x] Version numbers updated
             - [x] Build successful
             - [x] Tests passing
             - [ ] CHANGELOG reviewed
             - [ ] Breaking changes documented (if any)
-            
+
             ### Next Steps
             Once this PR is reviewed and merged, packages will be automatically published to npm.
