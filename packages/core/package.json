@@ -1,6 +1,6 @@
 {
   "name": "@orval-forge/core",
-  "version": "1.9.101",
+  "version": "1.9.102",
   "description": "OrvalForge core code generation engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
