@@ -208,11 +208,14 @@ export class OrvalForgeGenerator {
       return null;
     }
 
-    // 返回 mutators 文件夹中的 .ts 文件路径
-    // Orval 会自动处理 TypeScript 文件
-    // 开发时: src/lib/generator.ts -> ../../mutators/xxx.ts
-    // 编译后: dist/lib/generator.js -> ../mutators/xxx.ts (仍然是 .ts)
-    const mutatorPath = path.resolve(__dirname, '../mutators', mutatorFile);
+    // 返回 mutators 源文件路径
+    // 开发时: src/lib/generator.ts -> ../mutators/xxx.ts
+    // 发布后: dist/lib/generator.js -> ../../src/mutators/xxx.ts (包中包含 src/mutators/)
+    const isDev = __dirname.includes('/src/');
+    const mutatorPath = isDev
+      ? path.resolve(__dirname, '../mutators', mutatorFile)
+      : path.resolve(__dirname, '../../src/mutators', mutatorFile);
+    
     return mutatorPath;
   }
 
