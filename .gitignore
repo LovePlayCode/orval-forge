@@ -17,9 +17,7 @@ lerna-debug.log*
 # ========================================
 dist/
 build/
-# lib/ - 注意：不要屏蔽 src/ 下的 lib/ 源代码目录
-# 只屏蔽根目录的 lib/ 构建产物
-/lib/
+
 *.tsbuildinfo
 .turbo/
 
