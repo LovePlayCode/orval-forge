@@ -3,10 +3,13 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "composite": true
+    "composite": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "package.json"
   ],
   "references": [
     {

@@ -5,11 +5,8 @@ import { OrvalForgeGenerator } from '@orval-forge/core';
 import type { OrvalForgeConfig, HttpClientType } from '@orval-forge/types';
 import * as fs from 'fs';
 import * as path from 'path';
-
-// 获取包信息
-const packageJson = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../../../../package.json'), 'utf-8')
-);
+// 直接导入 package.json（TypeScript/Node.js 原生支持）
+import packageJson from '../../package.json';
 
 /**
  * 查找配置文件
