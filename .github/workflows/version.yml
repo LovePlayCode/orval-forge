@@ -23,45 +23,45 @@ permissions:
 jobs:
   version:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8.15.0
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Update version
         run: |
           echo "Updating all workspace versions to ${{ inputs.version }}"
-          
+
           # 更新根 package.json
           jq --arg version "${{ inputs.version }}" '.version = $version' package.json > package.json.tmp
           mv package.json.tmp package.json
-          
+
           # 更新所有 workspace 包的版本
           find packages -name "package.json" -type f | while read -r pkg; do
             echo "Updating $pkg to version ${{ inputs.version }}"
             jq --arg version "${{ inputs.version }}" '.version = $version' "$pkg" > "$pkg.tmp"
             mv "$pkg.tmp" "$pkg"
           done
-          
+
           # 更新 pnpm-lock.yaml
           pnpm install --lockfile-only
-      
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v6
@@ -69,6 +69,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore(release): bump version to v${{ inputs.version }}'
           branch: release/v${{ inputs.version }}
+          base: main
           delete-branch: true
           title: 'Release v${{ inputs.version }}'
           body: |
