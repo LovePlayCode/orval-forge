@@ -45,7 +45,7 @@ jobs:
         run: pnpm run build
       
       - name: Run tests (pre-publish verification)
-        run: pnpm run test:run
+        run: pnpm run test:run --filter='./packages/*'
       
       - name: Configure npm authentication
         run: |
