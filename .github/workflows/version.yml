@@ -47,7 +47,20 @@ jobs:
       - name: Update version
         run: |
           echo "Updating all workspace versions to ${{ inputs.version }}"
-          pnpm -r exec pnpm version ${{ inputs.version }} --no-git-tag-version --allow-same-version
+          
+          # 更新根 package.json
+          jq --arg version "${{ inputs.version }}" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          
+          # 更新所有 workspace 包的版本
+          find packages -name "package.json" -type f | while read -r pkg; do
+            echo "Updating $pkg to version ${{ inputs.version }}"
+            jq --arg version "${{ inputs.version }}" '.version = $version' "$pkg" > "$pkg.tmp"
+            mv "$pkg.tmp" "$pkg"
+          done
+          
+          # 更新 pnpm-lock.yaml
+          pnpm install --lockfile-only
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
