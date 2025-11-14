@@ -1,6 +1,6 @@
 {
   "name": "@orval-forge/my-request",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Full-featured HTTP client for OrvalForge",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
