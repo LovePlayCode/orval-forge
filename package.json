@@ -1,6 +1,6 @@
 {
   "name": "orval-forge-workspaces",
-  "version": "1.0.3",
+  "version": "1.0.11",
   "private": true,
   "description": "OrvalForge monorepo workspace",
   "packageManager": "pnpm@8.15.0",
