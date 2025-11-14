@@ -72,4 +72,4 @@ jobs:
           title: 'Release v${{ github.event.inputs.version }}'
           body: |
             This PR prepares the release of version v${{ github.event.inputs.version }}.
-            Once merged, the publish workflow will trigger automatically dsads.
+            Once merged, the publish workflow will trigger automatically Hello World.
