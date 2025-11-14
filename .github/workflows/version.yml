@@ -4,76 +4,72 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to release (e.g., 1.0.0, 1.1.0, 2.0.0)'
+        description: 'Version number (e.g., 1.0.0, 1.1.0, 2.0.0)'
         required: true
         type: string
-      version-type:
-        description: 'Version type'
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  version:
+  prepare:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8.15.0
-      
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
-      - name: Update version
+
+      - name: Update versions
         run: |
-          echo "Updating all workspace versions to ${{ inputs.version }}"
-          
+          echo "Updating all workspace versions to ${{ github.event.inputs.version }}"
+
           # 更新根 package.json
-          jq --arg version "${{ inputs.version }}" '.version = $version' package.json > package.json.tmp
+          jq --arg version "${{ github.event.inputs.version }}" '.version = $version' package.json > package.json.tmp
           mv package.json.tmp package.json
-          
+
           # 更新所有 workspace 包的版本
           find packages -name "package.json" -type f | while read -r pkg; do
-            echo "Updating $pkg to version ${{ inputs.version }}"
-            jq --arg version "${{ inputs.version }}" '.version = $version' "$pkg" > "$pkg.tmp"
+            echo "Updating $pkg to version ${{ github.event.inputs.version }}"
+            jq --arg version "${{ github.event.inputs.version }}" '.version = $version' "$pkg" > "$pkg.tmp"
             mv "$pkg.tmp" "$pkg"
           done
-          
+
           # 更新 pnpm-lock.yaml
           pnpm install --lockfile-only
-          
-          # 显示变更
-          echo "Changed files:"
-          git status --short
-      
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore(release): bump version to v${{ inputs.version }}'
-          branch: release/v${{ inputs.version }}
+          commit-message: 'chore(release): bump version to v${{ github.event.inputs.version }}'
+          branch: release/v${{ github.event.inputs.version }}
           base: main
-          title: 'Release v${{ inputs.version }}'
+          title: 'Release v${{ github.event.inputs.version }}'
           body: |
-            This PR prepares the release of version v${{ inputs.version }}.
+            This PR prepares the release of version v${{ github.event.inputs.version }}.
             Once merged, the publish workflow will trigger automatically.
