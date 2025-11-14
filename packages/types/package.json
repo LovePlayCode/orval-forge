@@ -1,6 +1,6 @@
 {
   "name": "@orval-forge/types",
-  "version": "1.0.100",
+  "version": "1.9.101",
   "description": "Shared TypeScript types for OrvalForge",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

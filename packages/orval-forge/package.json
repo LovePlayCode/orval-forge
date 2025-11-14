@@ -1,6 +1,6 @@
 {
   "name": "orval-forge",
-  "version": "1.0.100",
+  "version": "1.9.101",
   "description": "A powerful wrapper around Orval with custom HTTP client integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
