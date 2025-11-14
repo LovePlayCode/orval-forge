@@ -53,7 +53,7 @@ jobs:
       
       - name: Publish packages to npm
         run: |
-          pnpm -r --filter './packages/*' --no-private publish --access public --no-git-checks
+          pnpm -r --filter './packages/*' publish --access public --no-git-checks
       
       - name: Extract version
         id: version
