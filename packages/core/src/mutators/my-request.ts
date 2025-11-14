@@ -38,7 +38,7 @@ myRequestInstance.interceptors.response.use(
   },
   (error) => {
     console.error('MyRequest: 响应错误', error);
-    
+
     // 统一错误处理
     if (error.response) {
       switch (error.response.status) {
@@ -58,7 +58,7 @@ myRequestInstance.interceptors.response.use(
           console.error('请求失败');
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
@@ -77,7 +77,7 @@ export const customInstance = <T>(
     cancelToken: source.token,
   });
 
-  // @ts-ignore
+  // @ts-expect-error: Adding cancel method to promise
   promise.cancel = () => {
     source.cancel('Query was cancelled');
   };

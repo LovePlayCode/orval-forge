@@ -1,31 +1,31 @@
 /**
  * OrvalForge Petstore API 使用演示
- * 
+ *
  * 这个文件展示了如何使用 OrvalForge 生成的 API 函数
  * 注意: 这个文件需要先运行 `npm run generate` 生成 API 代码后才能使用
  */
 
 // 导入生成的 API 函数和类型
 // 注意: 这些导入在生成代码之前会报错，这是正常的
-import { 
-  listPets, 
-  createPet, 
-  showPetById, 
-  updatePet, 
+import { getPetstoreAPI } from './generated/api/endpoints';
+
+const {
+  listPets,
+  createPet,
+  showPetById,
+  updatePet,
   deletePet,
   listUsers,
   createUser,
-  getUserById
-} from './generated/api/endpoints';
+  getUserById,
+} = getPetstoreAPI();
 
-import type { 
-  Pet, 
-  NewPet, 
-  UpdatePet, 
-  User, 
+import type {
+  Pet,
+  NewPet,
+  UpdatePet,
+  User,
   NewUser,
-  Category,
-  Tag
 } from './generated/api/models';
 
 /**
@@ -49,15 +49,19 @@ export class PetService {
   /**
    * 创建新宠物
    */
-  async addPet(petData: Omit<NewPet, 'status'> & { status?: Pet['status'] }): Promise<Pet> {
+  async addPet(
+    petData: Omit<NewPet, 'status'> & { status?: Pet['status'] }
+  ): Promise<Pet> {
     try {
       const newPet: NewPet = {
         ...petData,
         status: petData.status || 'available',
       };
-      
+
       const response = await createPet(newPet);
-      console.log(`✅ 成功创建宠物: ${response.data.name} (ID: ${response.data.id})`);
+      console.log(
+        `✅ 成功创建宠物: ${response.data.name} (ID: ${response.data.id})`
+      );
       return response.data;
     } catch (error) {
       console.error('❌ 创建宠物失败:', error);
@@ -70,7 +74,7 @@ export class PetService {
    */
   async getPetById(petId: number): Promise<Pet | null> {
     try {
-      const response = await showPetById({ petId });
+      const response = await showPetById(petId);
       console.log(`✅ 成功获取宠物: ${response.data.name}`);
       return response.data;
     } catch (error: any) {
@@ -88,7 +92,7 @@ export class PetService {
    */
   async updatePetInfo(petId: number, updates: UpdatePet): Promise<Pet> {
     try {
-      const response = await updatePet({ petId, data: updates });
+      const response = await updatePet(petId, updates);
       console.log(`✅ 成功更新宠物: ${response.data.name}`);
       return response.data;
     } catch (error: any) {
@@ -106,7 +110,7 @@ export class PetService {
    */
   async removePet(petId: number): Promise<boolean> {
     try {
-      await deletePet({ petId });
+      await deletePet(petId);
       console.log(`✅ 成功删除宠物 ID: ${petId}`);
       return true;
     } catch (error: any) {
@@ -124,7 +128,7 @@ export class PetService {
    */
   async getPetsByStatus(status: Pet['status']): Promise<Pet[]> {
     const allPets = await this.getAllPets(100); // 获取更多宠物
-    return allPets.filter(pet => pet.status === status);
+    return allPets.filter((pet) => pet.status === status);
   }
 
   /**
@@ -143,12 +147,15 @@ export class UserService {
   /**
    * 获取用户列表
    */
-  async getAllUsers(page = 1, pageSize = 10): Promise<{ users: User[]; total?: number }> {
+  async getAllUsers(
+    page = 1,
+    pageSize = 10
+  ): Promise<{ users: User[]; total?: number }> {
     try {
       const response = await listUsers({ page, pageSize });
       const users = response.data.users || [];
       const total = response.data.pagination?.total;
-      
+
       console.log(`✅ 成功获取第 ${page} 页用户，共 ${users.length} 个用户`);
       return { users, total };
     } catch (error) {
@@ -163,7 +170,9 @@ export class UserService {
   async addUser(userData: NewUser): Promise<User> {
     try {
       const response = await createUser(userData);
-      console.log(`✅ 成功创建用户: ${response.data.username} (ID: ${response.data.id})`);
+      console.log(
+        `✅ 成功创建用户: ${response.data.username} (ID: ${response.data.id})`
+      );
       return response.data;
     } catch (error) {
       console.error('❌ 创建用户失败:', error);
@@ -176,7 +185,7 @@ export class UserService {
    */
   async getUserById(userId: number): Promise<User | null> {
     try {
-      const response = await getUserById({ userId });
+      const response = await getUserById(userId);
       console.log(`✅ 成功获取用户: ${response.data.username}`);
       return response.data;
     } catch (error: any) {
@@ -207,12 +216,11 @@ export class PetstoreDemo {
     try {
       // 1. 宠物管理演示
       await this.petDemo();
-      
+
       console.log('\n' + '-'.repeat(30) + '\n');
-      
+
       // 2. 用户管理演示
       await this.userDemo();
-      
     } catch (error) {
       console.error('演示过程中出现错误:', error);
     }
@@ -226,7 +234,7 @@ export class PetstoreDemo {
    */
   private async petDemo(): Promise<void> {
     console.log('🐕 宠物管理演示');
-    
+
     // 获取现有宠物列表
     console.log('\n1. 获取宠物列表');
     const pets = await this.petService.getAllPets(5);
@@ -237,35 +245,31 @@ export class PetstoreDemo {
     const newPetData: NewPet = {
       name: 'Buddy',
       status: 'available',
-      tags: [
-        { name: 'friendly' },
-        { name: 'playful' }
-      ],
+      tags: [{ name: 'friendly' }, { name: 'playful' }],
       category: {
-        name: 'Dog'
+        name: 'Dog',
       },
-      photoUrls: ['https://example.com/buddy.jpg']
+      photoUrls: ['https://example.com/buddy.jpg'],
     };
 
     try {
       const createdPet = await this.petService.addPet(newPetData);
-      
+
       // 获取刚创建的宠物
       console.log('\n3. 获取特定宠物');
       const retrievedPet = await this.petService.getPetById(createdPet.id);
-      
+
       if (retrievedPet) {
         // 更新宠物信息
         console.log('\n4. 更新宠物信息');
         const updatedPet = await this.petService.updatePetInfo(createdPet.id, {
           name: 'Buddy Updated',
-          status: 'pending'
+          status: 'pending',
         });
-        
+
         console.log(`   宠物名称已更新: ${updatedPet.name}`);
         console.log(`   宠物状态已更新: ${updatedPet.status}`);
       }
-      
     } catch (error) {
       console.log('   (创建宠物失败，可能是因为 API 不支持实际创建)');
     }
@@ -285,13 +289,15 @@ export class PetstoreDemo {
    */
   private async userDemo(): Promise<void> {
     console.log('👥 用户管理演示');
-    
+
     // 获取用户列表
     console.log('\n1. 获取用户列表');
     try {
       const { users, total } = await this.userService.getAllUsers(1, 5);
-      console.log(`   当前有 ${users.length} 个用户 (总数: ${total || '未知'})`);
-      
+      console.log(
+        `   当前有 ${users.length} 个用户 (总数: ${total || '未知'})`
+      );
+
       if (users.length > 0) {
         console.log('   用户列表:');
         users.forEach((user, index) => {
@@ -310,20 +316,21 @@ export class PetstoreDemo {
       firstName: 'Demo',
       lastName: 'User',
       phone: '+1234567890',
-      userStatus: 1
+      userStatus: 1,
     };
 
     try {
       const createdUser = await this.userService.addUser(newUserData);
       console.log(`   创建用户成功: ${createdUser.username}`);
-      
+
       // 获取刚创建的用户
       console.log('\n3. 获取特定用户');
       const retrievedUser = await this.userService.getUserById(createdUser.id);
       if (retrievedUser) {
-        console.log(`   用户详情: ${retrievedUser.firstName} ${retrievedUser.lastName}`);
+        console.log(
+          `   用户详情: ${retrievedUser.firstName} ${retrievedUser.lastName}`
+        );
       }
-      
     } catch (error) {
       console.log('   (创建用户失败，可能是因为 API 不支持实际创建)');
     }
@@ -335,36 +342,33 @@ export class PetstoreDemo {
  */
 export function typeDemo(): void {
   console.log('🔒 TypeScript 类型安全演示');
-  
+
   // 类型约束确保数据正确性
   const createPetWithTypes = (): NewPet => {
     return {
       name: 'Type Safe Pet',
       status: 'available', // 只能是 'available' | 'pending' | 'sold'
-      tags: [
-        { name: 'typescript' },
-        { name: 'type-safe' }
-      ],
+      tags: [{ name: 'typescript' }, { name: 'type-safe' }],
       category: {
         id: 1,
-        name: 'Demo Category'
-      }
+        name: 'Demo Category',
+      },
     };
   };
 
   // 编译时类型检查
   const handlePet = (pet: Pet): void => {
     console.log(`处理宠物: ${pet.name}`);
-    
+
     // TypeScript 提供完整的智能提示
     if (pet.tags) {
-      pet.tags.forEach(tag => {
+      pet.tags.forEach((tag) => {
         if (tag.name) {
           console.log(`  标签: ${tag.name}`);
         }
       });
     }
-    
+
     // 枚举类型检查
     switch (pet.status) {
       case 'available':
@@ -382,8 +386,14 @@ export function typeDemo(): void {
     }
   };
 
+  // 调用 handlePet 函数以避免未使用错误
+  // handlePet(createPetWithTypes());
+
   const demoData = createPetWithTypes();
   console.log('创建的演示数据:', demoData);
+
+  // 调用 handlePet 函数以避免未使用错误
+  handlePet(demoData as Pet);
 }
 
 // 导出服务实例
