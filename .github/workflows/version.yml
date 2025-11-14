@@ -44,59 +44,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      
       - name: Update version
         run: |
-          # 更新根 package.json 版本
+          echo "Updating all workspace versions to ${{ inputs.version }}"
           npm version ${{ inputs.version }} --no-git-tag-version
-          
-          # 更新所有包的版本
           pnpm -r --filter './packages/*' exec npm version ${{ inputs.version }} --no-git-tag-version
-      
-      - name: Generate CHANGELOG
-        run: |
-          # 这里可以添加生成 CHANGELOG 的逻辑
-          echo "## v${{ inputs.version }}" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          echo "Released on $(date +'%Y-%m-%d')" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
-      
-      - name: Create Release Branch
-        run: |
-          BRANCH_NAME="release/v${{ inputs.version }}"
-          git checkout -b $BRANCH_NAME
-          git add .
-          git commit -m "chore: release v${{ inputs.version }}"
-          git push origin $BRANCH_NAME
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(release): bump version to v${{ inputs.version }}'
           branch: release/v${{ inputs.version }}
-          title: "chore: release v${{ inputs.version }}"
+          title: 'Release v${{ inputs.version }}'
           body: |
-            ## Release v${{ inputs.version }}
-            
-            This PR bumps the version to **v${{ inputs.version }}** (${{ inputs.version-type }} release).
-            
-            ### Changes
-            - Updated all package versions
-            - Generated CHANGELOG
-            
-            ### Next Steps
-            1. Review the changes
-            2. Merge this PR to trigger automatic publishing to npm
-            3. A GitHub release will be created automatically
-            
-            ---
-            
-            **Version Type**: ${{ inputs.version-type }}
-            **Target Version**: ${{ inputs.version }}
-          labels: |
-            release
-            ${{ inputs.version-type }}
+            This PR prepares the release of version v${{ inputs.version }}.
+            Once merged, the publish workflow will trigger automatically.
