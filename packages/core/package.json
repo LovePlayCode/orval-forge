@@ -28,7 +28,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && pnpm run copy-mutators",
+    "copy-mutators": "cp -r src/mutators/*.ts dist/mutators/",
     "dev": "tsc --watch",
     "test": "vitest",
     "test:run": "vitest run",
